@@ -20,6 +20,8 @@ public class ProductCategory {
 
     private String name;
 
+    private String type;
+
 //    public ProductCategory(String name) {
 //        this.name = name;
 //    }

@@ -19,16 +19,32 @@ public class CategoryController {
             this.categoryService = categoryService;
         }
 
+
+//        dodawanie kategorii
         @PostMapping
-//        @ResponseStatus(HttpStatus.CREATED)// do wyjasnienia
-        public ProductCategory createCategory(@RequestBody ProductCategoryDto category) {
+        @ResponseStatus(HttpStatus.CREATED)
+        public ProductCategoryDto createCategory(@RequestBody ProductCategoryDto category) {
             return categoryService.createCategory(category);
         }
 
+//        update kategorii
+@PutMapping("/{categoryid}")
+@ResponseStatus(HttpStatus.NO_CONTENT)
+public void updateUser(@PathVariable Long categoryid,  @RequestBody ProductCategoryDto category) {
+    categoryService.updateCategory(category, categoryid);
+}
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+// wyswietlanie wszystkich kategorii
+    @GetMapping  //(produces = MediaType.APPLICATION_JSON_VALUE) Json jest domyslnm formatem- to nie jest konieczne
     public List<ProductCategoryDto> getAllCategories() {
         return categoryService.showSavedCategories();
+    }
+
+//usuwanie kategorii po podanym w parametrze metody id
+    @DeleteMapping("/{categoryid}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCategory(@PathVariable Long categoryid) {
+        categoryService.deleteCategory(categoryid);
     }
 
     }

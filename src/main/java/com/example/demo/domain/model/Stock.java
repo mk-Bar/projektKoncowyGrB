@@ -11,7 +11,7 @@ public class Stock {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
-    @OneToOne
+    @OneToOne(mappedBy = "stock")
    private Product product;
 
     private Integer quantity;

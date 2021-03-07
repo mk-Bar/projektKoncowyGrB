@@ -13,6 +13,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "ordersPlaced")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +29,7 @@ public class Order {
 
     private LocalDate orderDate;
 
-    @OneToMany //do weryfikacji
+    @OneToMany (mappedBy = "idZamowienia")//do weryfikacji
     private List<OrderLine> orderLine;
 
     @Enumerated (EnumType.STRING)

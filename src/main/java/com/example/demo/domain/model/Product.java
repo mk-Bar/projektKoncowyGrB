@@ -15,7 +15,7 @@ public class Product {
     private Long productId;
 
     private String productName;
-    private BigDecimal price;
+    private Double price;
 
     @ManyToOne
     private ProductCategory productCategory;  // do wyjasnienia jak odniesc sie do kategorii
@@ -24,6 +24,7 @@ public class Product {
     @Enumerated (EnumType.STRING)
     private ProductType productType;
 
-    @OneToOne(mappedBy = "product")
+    @OneToOne
+//    @OneToOne(mappedBy = "product")
     private Stock stock;
 }

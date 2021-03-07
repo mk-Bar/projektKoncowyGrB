@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,32 +21,60 @@ public class CategoryService {
         this.categoryRepo = categoryRepo;
     }
 
-
-    public ProductCategory createCategory(ProductCategoryDto category) {
+//tworzenie
+    public ProductCategoryDto createCategory(ProductCategoryDto category) {
         if (categoryRepo.existsByName(category.getName())) {
             throw new ApplicationException("Category already exists");
         }
-        return categoryRepo.save(map(category));
+        return map(categoryRepo.save(map(category)));
     }
-
+//wyswietlanie
     public List<ProductCategoryDto> showSavedCategories(){
 
         return categoryRepo.findAll().stream().map(this::map).collect(Collectors.toList()); //dla frontendu
     }
 
+//update
+    public ProductCategoryDto updateCategory(ProductCategoryDto category,Long id){
+        if(!categoryRepo.existsById(id)){
+          throw new ApplicationException("No such id exists");
+        }
+        ProductCategory toBeSaved= map(category);
+        toBeSaved.setId(id);
+        return map(categoryRepo.save(toBeSaved));
+    }
 
-    private ProductCategoryDto map(ProductCategory productCategory){
+//    usuwanie
+
+    public void deleteCategory(Long id){
+        if (!categoryRepo.existsById(id)){
+            throw new ApplicationException("No such category exists");
+        }
+        categoryRepo.deleteById(id);
+    }
+
+//    dodanie do kategorii nowego pola
+
+
+    public ProductCategoryDto map(ProductCategory productCategory){
         ProductCategoryDto productCategoryDto = new ProductCategoryDto();
         productCategoryDto.setName(productCategory.getName());
-        productCategoryDto.setId(productCategoryDto.getId());
+        productCategoryDto.setId(productCategory.getId());
+        productCategoryDto.setType(productCategory.getType());
         return productCategoryDto;
     }
 
     private ProductCategory map(ProductCategoryDto productCategoryDto){
         ProductCategory productCategory = new ProductCategory();
         productCategory.setName(productCategoryDto.getName());
-        productCategory.setId(productCategoryDto.getId());
+//        productCategory.setId(productCategoryDto.getId());
+        productCategory.setType(productCategoryDto.getType());
         return productCategory;
+    }
+
+
+    public ProductCategory getById(Long id){
+        return categoryRepo.findById(id).orElseThrow();
     }
 
 }
