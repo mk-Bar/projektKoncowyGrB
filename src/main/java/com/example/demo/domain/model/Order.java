@@ -23,7 +23,7 @@ public class Order {
 
 //    private Double totalPrice;    //bedze wyliczona z orderLine
 
-    private String userSddress;
+    private String userAddress;
     private String deliveryAddress;
 
     private LocalDate orderDate;
