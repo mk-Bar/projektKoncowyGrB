@@ -5,11 +5,13 @@ import com.example.demo.domain.model.ProductCategory;
 import com.example.demo.domain.model.Stock;
 import com.example.demo.domain.repository.ProductRepo;
 import com.example.demo.domain.repository.StockRepo;
+import com.example.demo.exceptions.ApplicationException;
 import com.example.demo.model.ProductCategoryDto;
 import com.example.demo.model.ProductDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,7 +27,7 @@ public class ProductService {
     }
 
 
-    //    tworzernie
+    //    tworzenie
     public Product createProduct(ProductDto productDto) {
         Product product = new Product();
         product.setProductName(productDto.getProductName());
@@ -47,6 +49,13 @@ public class ProductService {
         return productRepo.findAll().stream().map(this::map).collect(Collectors.toList()); //dla frontendu
     }
 
+
+
+    public List<ProductDto> showProductById() {
+
+        return productRepo.findAll().stream().map(product -> map(product)).collect(Collectors.toList()); //dla frontendu
+    }
+
     private ProductDto map(Product product) {
         ProductDto productDto = new ProductDto();
         productDto.setProductName(product.getProductName());
@@ -57,9 +66,39 @@ public class ProductService {
         productDto.setProductCategory(categoryService.map(product.getProductCategory()));
         return productDto;
     }
+    private Product map(ProductDto productDto) {
+        Product product = new Product();
+        product.setProductName(productDto.getProductName());
+        product.setProductId(productDto.getProductId());
+        product.setProductType(productDto.getProductType());
+        product.setPrice(productDto.getPrice());
+//        product.setQuantity(productDto.getStock().getQuantity());
+//        product.setProductCategory(categoryService.map(productDto.getProductCategory()));
+        return product;
+    }
+
 //    update
-
+public void updateProduct(ProductDto productDto,Long id){
+//    if(!productRepo.existsById(id)){
+//        throw new ApplicationException("No such product exists");
+//    }
+    Product productById = productRepo.findById(id).orElseThrow(()-> new ApplicationException("No such product exists"));
+    productById.setProductName(productDto.getProductName());
+    productById.setProductType(productDto.getProductType());
+    productById.getProductCategory().setName(productDto.getProductCategory().getName());
+    productById.getProductCategory().setType(productDto.getProductCategory().getType());
+    productById.setPrice(productDto.getPrice());
+    productRepo.save(productById);
+    //    Product toBeUpdated= map(productDto);
+//    toBeUpdated.setId(id);
+//    return map(productRepo.save(toBeUpdated));
+}
 //    usuwanie
-
+    public void deleteProduct(Long id){
+        if (!productRepo.existsById(id)){
+            throw new ApplicationException("No such product exists");
+        }
+        productRepo.deleteById(id);
+    }
 
     }

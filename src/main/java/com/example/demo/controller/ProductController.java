@@ -25,11 +25,24 @@ public class ProductController {
         return productService.createProduct(productDto);
     }
 
-    // wyswietlanie wszystkich produktó
+    // wyswietlanie wszystkich produktów
     @GetMapping
     public List<ProductDto> getAllProducts() {
         return productService.showSavedProducts();
     }
 
+    //        update produktu
+    @PutMapping("/{productid}")
+
+    public void updateProduct(@PathVariable Long productid,  @RequestBody ProductDto productDto) {
+        productService.updateProduct(productDto, productid);
+    }
+
+    //usuwanie produktu po podanym id
+    @DeleteMapping("/{productId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteProduct(@PathVariable Long productId) {
+        productService.deleteProduct(productId);
+    }
 
 }

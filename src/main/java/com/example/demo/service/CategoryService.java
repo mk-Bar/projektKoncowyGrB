@@ -31,7 +31,7 @@ public class CategoryService {
 //wyswietlanie
     public List<ProductCategoryDto> showSavedCategories(){
 
-        return categoryRepo.findAll().stream().map(this::map).collect(Collectors.toList()); //dla frontendu
+        return categoryRepo.findAll().stream().map(productCategory -> map(productCategory)).collect(Collectors.toList()); //dla frontendu
     }
 
 //update

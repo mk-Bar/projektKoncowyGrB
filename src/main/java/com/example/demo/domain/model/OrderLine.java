@@ -1,8 +1,11 @@
 package com.example.demo.domain.model;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
 @Entity
+@Data
 public class OrderLine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,7 +17,7 @@ public class OrderLine {
     @ManyToOne
     private Product product;
 
-    private Double productUitPrice;
+    private Double productUnitPrice;
 
     private Integer quantity;
 }
