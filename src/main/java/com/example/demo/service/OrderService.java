@@ -30,7 +30,7 @@ public class OrderService {
     }
 
 //dodawanmie lini zamowienia
-    public void createOrder(OrderDto orderDto) {
+    public Long createOrder(OrderDto orderDto) {
         Order order = new Order();
         order.setOrderDate(LocalDate.now());
         order.setDeliveryAddress(orderDto.getDeliveryAddress());
@@ -46,6 +46,7 @@ public class OrderService {
             orderLine.setIdZamowienia(savedInDb);
             orderLineRepo.save(orderLine);
         });
+        return savedInDb.getOrderNumber();
     }
 
     //w kontrolerze  w body : orderlineDto

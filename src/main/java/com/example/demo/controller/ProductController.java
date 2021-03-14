@@ -5,6 +5,7 @@ import com.example.demo.model.ProductCategoryDto;
 import com.example.demo.model.ProductDto;
 import com.example.demo.service.ProductService;
 import org.springframework.http.HttpStatus;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class ProductController {
     @ResponseStatus(HttpStatus.CREATED)
     public Product createProduct(@RequestBody ProductDto productDto) {
         return productService.createProduct(productDto);
+
     }
 
     // wyswietlanie wszystkich produktów
@@ -34,7 +36,7 @@ public class ProductController {
     //        update produktu
     @PutMapping("/{productid}")
 
-    public void updateProduct(@PathVariable Long productid,  @RequestBody ProductDto productDto) {
+    public void updateProduct(@PathVariable Long productid, @RequestBody ProductDto productDto) {
         productService.updateProduct(productDto, productid);
     }
 

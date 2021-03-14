@@ -3,12 +3,12 @@ package com.example.demo.service;
 import com.example.demo.domain.model.ProductCategory;
 import com.example.demo.exceptions.ApplicationException;
 import com.example.demo.domain.repository.CategoryRepo;
+import com.example.demo.exceptions.ProductUseCategoryException;
 import com.example.demo.model.ProductCategoryDto;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -16,9 +16,11 @@ import java.util.stream.Collectors;
 public class CategoryService {
 
     private final CategoryRepo categoryRepo;//final zabezpiecza przed wartością categoryrepo= null
+    private final ProductService productService;
 
-    public CategoryService(CategoryRepo categoryRepo) {
+    public CategoryService(CategoryRepo categoryRepo, @Lazy ProductService productService) { //ta zalezność bedzie wykonana pozniej. najpierw stworzone zostanie proxy productsercice
         this.categoryRepo = categoryRepo;
+        this.productService = productService;
     }
 
 //tworzenie
@@ -46,10 +48,12 @@ public class CategoryService {
 
 //    usuwanie
 
-    public void deleteCategory(Long id){
-        if (!categoryRepo.existsById(id)){
-            throw new ApplicationException("No such category exists");
-        }
+    public void deleteCategory(Long id) throws ProductUseCategoryException {
+
+        ProductCategory category=categoryRepo.findById(id).orElseThrow(()->new ApplicationException("No such category exists"));
+        if(!productService.findAllByCategory(category).isEmpty()){
+            throw new ProductUseCategoryException();
+        };
         categoryRepo.deleteById(id);
     }
 

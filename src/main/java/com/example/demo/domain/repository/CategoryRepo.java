@@ -7,4 +7,6 @@ public interface CategoryRepo extends JpaRepository<ProductCategory,Long> {
 
     boolean existsByName(String name);
 
+
+
 }
