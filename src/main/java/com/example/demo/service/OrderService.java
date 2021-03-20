@@ -37,6 +37,8 @@ public class OrderService {
         order.setUserAddress(orderDto.getUserAddress());
         order.setStatus(orderDto.getStatus());
         Order savedInDb = orderRepo.save(order);
+
+        // TODO: 18.03.2021  sprawdzeic czemu nei działą
         orderDto.getOrderLines().stream().forEach(orderLineDto -> {
             OrderLine orderLine = new OrderLine();
             orderLine.setQuantity(orderLineDto.getQuantity());

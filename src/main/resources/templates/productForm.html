@@ -22,6 +22,18 @@
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/addCategory}">Dodaj kategorię</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/addProduct}">Dodaj produkt</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/listOfProduct}">Lista produktów</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/orderForm}">Nowe zamówienie</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/orderDetails/{id}}">Szczegóły zamówienia</a>
+            </li>
 
         </ul>
     </div>
@@ -44,7 +56,7 @@
         <option th:each="type : ${T(com.example.demo.domain.model.ProductType).values()}"
                 th:value="${type}" th:text="${type}"></option>
     </select>
-    <label for="quantity">Category type:</label><br>
+    <label for="quantity">Ilość:</label><br>
     <input type="text" th:field="*{quantity}"/>
     <input type="submit" value="Zapisz">
 

@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
     <title>Sklep</title>
 </head>
 
@@ -14,25 +14,64 @@
     <div class="navbar">
         <ul class="navbar-nav">
             <li class="nav-item active">
+                <a class="nav-link" th:href="@{/index}">Strona główna</a>
+            </li>
+            <li class="nav-item active">
                 <a class="nav-link" th:href="@{/categories}">Zapisane kategorie</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/addCategory}">Dodaj kategorię</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/addProduct}">Dodaj produkt</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/listOfProduct}">Lista produktów</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/orderForm}">Nowe zamówienie</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/orderDetails/{id}}">Szczegóły zamówienia</a>
             </li>
 
         </ul>
     </div>
 </nav>
 <body>
-<h1>Lista produktów</h1>
+
+<h1 th:text="'Zamówienie nr '+ ${orderDto.getOrderNumber()}"></h1>
+<table class="table-sm">
+
+    <tbody>
+    <tr>
+        <th scope="row">Adres uzytkownika:</th>
+        <td th:text="${orderDto.getUserAddress()}"></td>
+    </tr>
+    <tr>
+        <th scope="row">Adres dostawy:</th>
+        <td th:text="${orderDto.getDeliveryAddress()}"></td>
+    </tr>
+    <tr>
+        <th scope="row">Status zamówienia:</th>
+        <td th:text="${orderDto.getStatus()}"></td>
+    </tr>
+    </tbody>
+</table>
+
 
 
 <table border="10" style="width:100%">
     <tr>
-        <th>Category Id</th>
-        <th>Category name</th>
-        <th>Category type</th>
-        <th>Delete category</th>
+        <th>Id produktu</th>
+        <th>Nazwa produktu</th>
+        <th>Nazwa kategorii</th>
+        <th>Typ produktu</th>
+        <th>Cena jednostkowa</th>
+        <th>Dostępna ilość</th>
+        <th>zamawiana ilość</th>
+        <th></th>
+
     </tr>
     <tr th:each="produkt: ${listOfProducts}">
         <td th:text="${produkt.productId}"></td>
@@ -42,19 +81,18 @@
         <td th:text="${produkt.price}"></td>
         <td th:text="${produkt.quantity}"></td>
         <td>
-<!--            <form method="post" th:action="@{/order/{id}/addOrderLine(id=${orderDto.getOrderNumber()})}">-->
-<!--                <input type="text"  >-->
-<!--                <input type="submit" value="dodaj">-->
-<!--            </form>-->
+            <!--            <form method="post" th:action="@{/order/{id}/addOrderLine(id=${orderDto.getOrderNumber()})}">-->
+            <!--                <input type="text"  >-->
+            <!--                <input type="submit" value="dodaj">-->
+            <!--            </form>-->
         </td>
+
+<!--        todo-->
         <!--id produktu do odania do erdelina i jeg ilosc-->
-<!--        wyswietlanie nad tabelą szczegółow zamowienia: adresy, status, wyswietlic w ptli orderliny i napisac sume zamowienia-->
-<!--        dodawanie ordelirnow poprzez resta-->
+        <!--        wyswietlanie nad tabelą szczegółow zamowienia: adresy, status, wyswietlic w ptli orderliny i napisac sume zamowienia-->
+        <!--        dodawanie ordelirnow poprzez resta-->
 
     </tr>
 </table>
-<!--<p th:if="${deleteErrorId == category.id}">Nie można uzunąc kategorii, ponieważ zawiera produkty</p>-->
-
-
 </body>
 </html>
