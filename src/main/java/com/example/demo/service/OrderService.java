@@ -7,6 +7,7 @@ import com.example.demo.domain.repository.ProductRepo;
 import com.example.demo.exceptions.ApplicationException;
 import com.example.demo.model.OrderDto;
 import com.example.demo.model.OrderLineDto;
+import com.example.demo.model.OrderLineForm;
 import com.example.demo.model.ProductDto;
 import org.springframework.stereotype.Service;
 
@@ -29,25 +30,27 @@ public class OrderService {
         this.orderRepo = orderRepo;
     }
 
-//dodawanmie lini zamowienia
+    //dodawanmie lini zamowienia
     public Long createOrder(OrderDto orderDto) {
         Order order = new Order();
         order.setOrderDate(LocalDate.now());
         order.setDeliveryAddress(orderDto.getDeliveryAddress());
         order.setUserAddress(orderDto.getUserAddress());
-        order.setStatus(orderDto.getStatus());
+        order.setStatus(Status.AWAITING_PAYMENT);
         Order savedInDb = orderRepo.save(order);
 
         // TODO: 18.03.2021  sprawdzeic czemu nei działą
-        orderDto.getOrderLines().stream().forEach(orderLineDto -> {
-            OrderLine orderLine = new OrderLine();
-            orderLine.setQuantity(orderLineDto.getQuantity());
-            Product product = productRepo.findById(orderLineDto.getProduct().getProductId()).orElseThrow(() -> new ApplicationException("No such product exists"));
-            orderLine.setProduct(product);
-            orderLine.setProductUnitPrice(product.getPrice());
-            orderLine.setIdZamowienia(savedInDb);
-            orderLineRepo.save(orderLine);
-        });
+        if (orderDto.getOrderLines() != null) {
+            orderDto.getOrderLines().stream().forEach(orderLineDto -> {
+                OrderLine orderLine = new OrderLine();
+                orderLine.setQuantity(orderLineDto.getQuantity());
+                Product product = productRepo.findById(orderLineDto.getProduct().getProductId()).orElseThrow(() -> new ApplicationException("No such product exists"));
+                orderLine.setProduct(product);
+                orderLine.setProductUnitPrice(product.getPrice());
+                orderLine.setIdZamowienia(savedInDb);
+                orderLineRepo.save(orderLine);
+            });
+        }
         return savedInDb.getOrderNumber();
     }
 
@@ -63,11 +66,20 @@ public class OrderService {
         orderLineRepo.save(orderLine);
     }
 
+    public void addOrderLineToOrder(Long orderId, OrderLineForm orderLineForm) {
+        OrderLineDto orderLineDto = new OrderLineDto();
+        orderLineDto.setQuantity(orderLineForm.getQuantity());
+        ProductDto productDto = new ProductDto();
+        productDto.setProductId(orderLineForm.getProductId());
+        orderLineDto.setProduct(productDto);
+        addOrderLineToOrder(orderId, orderLineDto);
+    }
 //    wyslietlanie order po id
 
     public OrderDto showOrderById(Long orderId) {
 
-        return orderRepo.findById(orderId).map(this::map).orElseThrow(() -> new ApplicationException("Order with provided ID does not exists"));
+        return orderRepo.findById(orderId).map(this::map).
+                orElseThrow(() -> new ApplicationException("Order with provided ID does not exists"));
     }
 
     private OrderDto map(Order order) {
@@ -93,13 +105,13 @@ public class OrderService {
         return orderDto;
     }
 
-//    usuwanie lini zamowienia
-public void deleteOrderLine(Long id){
-    if (!orderLineRepo.existsById(id)){
-        throw new ApplicationException("No such orderLine exists");
+    //    usuwanie lini zamowienia
+    public void deleteOrderLine(Long id) {
+        if (!orderLineRepo.existsById(id)) {
+            throw new ApplicationException("No such orderLine exists");
+        }
+        orderLineRepo.deleteById(id);
     }
-    orderLineRepo.deleteById(id);
-}
 
 }
 

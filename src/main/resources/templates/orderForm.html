@@ -47,12 +47,11 @@
     <label for="deliveryAddress">adres dostawy:</label><br>
     <input type="text" th:field="*{deliveryAddress}"/><br>
     <label for="status">Status:</label><br>
-    <input type="hidden" th:field="*{status}">
-<!--           th:value="${T(com.example.demo.domain.model.Status).AWAITING_PAYMENT}"-->
+
+<!--    <select  th:field="*{status}">-->
 <!--        <option th:each="status : ${T(com.example.demo.domain.model.Status).values()}"-->
 <!--                th:value="${status}" th:text="${status}"></option>-->
-    </input>
-    <!--    <input type="hidden" th:field="*{status}" th:value="${T(com.example.demo.domain.model.Status).AWAITING_PAYMENT}"/>-->
+<!--    </select>-->
     <input type="submit" value="Zapisz">
 
 </form>

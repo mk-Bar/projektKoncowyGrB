@@ -48,9 +48,9 @@ public class OrderController {
     }
 
 //    usuwanie orderLine po id
-@DeleteMapping("/{orderLineId}")
+@DeleteMapping("/orderLine/{orderLineId}")
 
-public void deleteorderLine(@PathVariable Long orderLineId) {
+public void deleteOrderLine(@PathVariable Long orderLineId) {
     orderService.deleteOrderLine(orderLineId);
 }
 }

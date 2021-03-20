@@ -1,6 +1,10 @@
 package com.example.demo.controller;
 
+import com.example.demo.exceptions.ProductUseCategoryException;
 import com.example.demo.model.OrderDto;
+import com.example.demo.model.OrderLineDto;
+import com.example.demo.model.OrderLineForm;
+import com.example.demo.model.ProductCategoryDto;
 import com.example.demo.service.OrderService;
 import com.example.demo.service.ProductService;
 import org.springframework.stereotype.Controller;
@@ -23,20 +27,30 @@ public class OrderHtmlController {
 
     //    tworezenie formularza order
     @GetMapping("/orderForm")
-    public String orderForm (Model model) {
+    public String orderForm(Model model) {
         model.addAttribute("orderDto", new OrderDto());
         return "orderForm";
     }
+
     @PostMapping("/orderForm")
     public String newOrder(@ModelAttribute("orderDto") OrderDto orderDto) {
         Long orderId = orderService.createOrder(orderDto);
-        return "redirect:/orderDetails/"+orderId;
+        return "redirect:/orderDetails/" + orderId;
     }
+
     @GetMapping("/orderDetails/{id}")
-    public String orderDetails (Model model, @PathVariable ("id") Long id) {
+    public String orderDetails(Model model, @PathVariable("id") Long id) {
         model.addAttribute("orderDto", orderService.showOrderById(id));
-        model.addAttribute("listOfProducts",productService.showSavedProducts());
+        model.addAttribute("listOfProducts", productService.showSavedProducts());
+        model.addAttribute("orderLineForm",new OrderLineForm());
         return "orderDetails";
+    }
+
+    // TODO: 20.03.2021 do weryfikacji
+    @PostMapping("/orderDetails/{id}")
+    public String addOrderLine(@PathVariable("id") Long id, @ModelAttribute("orderLineForm") OrderLineForm orderLineForm) {
+        orderService.addOrderLineToOrder(id, orderLineForm);
+        return "redirect:/orderDetails/" + id;
     }
 
 
