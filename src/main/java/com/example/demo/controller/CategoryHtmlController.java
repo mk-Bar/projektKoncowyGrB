@@ -18,7 +18,7 @@ public class CategoryHtmlController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("/index")
+    @GetMapping("/")
     public String showMainPage() {
 
         return "mainPage";
