@@ -65,6 +65,7 @@
 <table class="table-sm" id="orderLines">
     <tr>
         <th scope="row">Lp</th>
+        <th scope="row">Id</th>
         <th scope="row">Nazwa produktu</th>
         <th scope="row">Cena jednostkowa</th>
         <th scope="row">Ilość</th>
@@ -74,6 +75,7 @@
     <tr>
     <tr th:each="orderLine,iterator: ${orderDto.orderLines}">
         <td th:text="${iterator.index+1}"></td>
+        <td th:text="${orderLine.orderLineId}"></td>
         <td th:text="${orderLine.product.productName}"></td>
         <td th:text="${orderLine.product.price}"></td>
         <td th:text="${orderLine.quantity}"></td>
@@ -90,36 +92,41 @@
 </table>
 <h2 id="total"></h2>
 <script type="text/javascript">
-    $(function() {
-
+    function totalSum() {
         var TotalValue = 0;
 
-        $("tr #loop").each(function(index,value){
+        $("tr #loop").each(function (index, value) {
             currentRow = parseFloat($(this).text());
             TotalValue += currentRow
         });
 
         document.getElementById('total').innerHTML = TotalValue;
+    }
+
+    $(function() {
+
+        totalSum();
 
     });
     $(document).ready(function() {
         $("#orderLines .deleteLink").on("click",function() {
-            // var tr = $(this).closest('tr');
-            // tr.css("background-color","red");
-            //
-            // tr.fadeOut(400, function(){
-            //     tr.remove();
-            // });
+            var tr = $(this).closest('tr');
+            var id = tr.find("td:eq(1)").text();
+            var $this = $(this);
+            
             $.ajax({
-                url: '/api/order/orderLine/2',
+                url: '/api/order/orderLine/' + id,
                 type: 'DELETE',
                 success: function(result) {
-                    var tr = $(this).closest('tr');
+                    var tr = $this.closest('tr');
                     tr.css("background-color","red");
 
                     tr.fadeOut(400, function(){
                         tr.remove();
                     });
+                    setTimeout(function(){
+                        totalSum();
+                    }, 1000);
                 }
             });
             return false;
@@ -127,6 +134,9 @@
     });
 </script>
     <br>
+
+<h2 th:if="${stockError!=null}" style="font-style: italic; font-weight: bold; color:#ff0000;">Brak produktu
+</h2>
   <p> Lista dostępnych produktów</p>
     <table border="10" style="width:100%">
         <tr>

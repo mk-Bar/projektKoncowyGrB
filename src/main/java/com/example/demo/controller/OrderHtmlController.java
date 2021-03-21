@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.exceptions.InsufficienteStockException;
 import com.example.demo.exceptions.ProductUseCategoryException;
 import com.example.demo.model.OrderDto;
 import com.example.demo.model.OrderLineDto;
@@ -9,10 +10,7 @@ import com.example.demo.service.OrderService;
 import com.example.demo.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class OrderHtmlController {
@@ -39,21 +37,29 @@ public class OrderHtmlController {
     }
 
     @GetMapping("/orderDetails/{id}")
-    public String orderDetails(Model model, @PathVariable("id") Long id) {
+    public String orderDetails(Model model, @PathVariable("id") Long id, @RequestParam (value = "stockError",required = false) String stockError) {
+        if (stockError!=null) {
+        model.addAttribute("stockError",true);
+        }
+
         model.addAttribute("orderDto", orderService.showOrderById(id));
         model.addAttribute("listOfProducts", productService.showSavedProducts());
-        model.addAttribute("orderLineForm",new OrderLineForm());
+        model.addAttribute("orderLineForm", new OrderLineForm());
+
         return "orderDetails";
     }
 
-    // TODO: 20.03.2021 do weryfikacji
+
     @PostMapping("/orderDetails/{id}")
     public String addOrderLine(@PathVariable("id") Long id, @ModelAttribute("orderLineForm") OrderLineForm orderLineForm) {
-        orderService.addOrderLineToOrder(id, orderLineForm);
-        return "redirect:/orderDetails/" + id;
+        try {
+            orderService.addOrderLineToOrder(id, orderLineForm);
+            return "redirect:/orderDetails/" + id;
+        } catch (InsufficienteStockException e) {
+            return "redirect:/orderDetails/" + id + "?stockError=true";
+        }
+
     }
-
-
 
 
 //    utworzyc w bazie danyc  order

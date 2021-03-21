@@ -51,10 +51,14 @@ public class ProductService {
         return productRepo.findAll().stream().map(this::map).collect(Collectors.toList()); //dla frontendu
     }
 
-
+    // TODO: 20.03.2021 poprawic metodę
     public List<ProductDto> showProductById() {
 
         return productRepo.findAll().stream().map(product -> map(product)).collect(Collectors.toList()); //dla frontendu
+    }
+    public Integer getProductQuantity(Product product) {
+        Integer quantity = product.getStock().getQuantity();
+        return quantity;
     }
 
     private ProductDto map(Product product) {
@@ -91,10 +95,24 @@ public class ProductService {
         productById.getProductCategory().setType(productDto.getProductCategory().getType());
         productById.setPrice(productDto.getPrice());
         productRepo.save(productById);
+
+        Stock stock = new Stock();
+        stock.setQuantity(productDto.getQuantity());
+        Stock savedInDb = stockRepo.save(stock);
+        productById.setStock(savedInDb);
+        productRepo.save(productById);
+
         //    Product toBeUpdated= map(productDto);
 //    toBeUpdated.setId(id);
 //    return map(productRepo.save(toBeUpdated));
     }
+//stock update
+    public void changeStock(Integer quantity,Long productId){
+        Stock stock = stockRepo.findByProductProductId(productId).orElseThrow();
+        stock.setQuantity(stock.getQuantity()+quantity);
+        stockRepo.save(stock);
+    }
+
 
     //    usuwanie
     public void deleteProduct(Long id) {

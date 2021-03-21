@@ -5,6 +5,7 @@ import com.example.demo.domain.repository.OrderLineRepo;
 import com.example.demo.domain.repository.OrderRepo;
 import com.example.demo.domain.repository.ProductRepo;
 import com.example.demo.exceptions.ApplicationException;
+import com.example.demo.exceptions.InsufficienteStockException;
 import com.example.demo.model.OrderDto;
 import com.example.demo.model.OrderLineDto;
 import com.example.demo.model.OrderLineForm;
@@ -66,13 +67,22 @@ public class OrderService {
         orderLineRepo.save(orderLine);
     }
 
-    public void addOrderLineToOrder(Long orderId, OrderLineForm orderLineForm) {
+    public void addOrderLineToOrder(Long orderId, OrderLineForm orderLineForm) throws InsufficienteStockException {
         OrderLineDto orderLineDto = new OrderLineDto();
-        orderLineDto.setQuantity(orderLineForm.getQuantity());
-        ProductDto productDto = new ProductDto();
-        productDto.setProductId(orderLineForm.getProductId());
-        orderLineDto.setProduct(productDto);
-        addOrderLineToOrder(orderId, orderLineDto);
+        Integer stockQuantity = productService.getProductQuantity(productRepo.findById(orderLineForm.getProductId()).orElseThrow(()-> new ApplicationException("Product with provided ID does not exists")));
+        if (orderLineForm.getQuantity() <= stockQuantity) {
+            orderLineDto.setQuantity(orderLineForm.getQuantity());
+Integer orderedQuantity=orderLineForm.getQuantity();
+            ProductDto productDto = new ProductDto();
+            productDto.setProductId(orderLineForm.getProductId());
+            orderLineDto.setProduct(productDto);
+            addOrderLineToOrder(orderId, orderLineDto);
+
+            productService.changeStock(-1*orderedQuantity,orderLineForm.getProductId());
+
+        }else{
+            throw new InsufficienteStockException();
+        }
     }
 //    wyslietlanie order po id
 
@@ -99,6 +109,7 @@ public class OrderService {
 
             orderLinedto.setQuantity(orderLine.getQuantity());
             orderLinedto.setProduct(productDto);
+            orderLinedto.setOrderLineId(orderLine.getOrderLineId());
             return orderLinedto;
         }).collect(Collectors.toList()));
 
@@ -107,9 +118,9 @@ public class OrderService {
 
     //    usuwanie lini zamowienia
     public void deleteOrderLine(Long id) {
-        if (!orderLineRepo.existsById(id)) {
-            throw new ApplicationException("No such orderLine exists");
-        }
+
+        OrderLine orderLine=orderLineRepo.findById(id).orElseThrow(()-> new ApplicationException("No such orderLine exists"));
+        productService.changeStock(orderLine.getQuantity(),orderLine.getProduct().getProductId());
         orderLineRepo.deleteById(id);
     }
 
