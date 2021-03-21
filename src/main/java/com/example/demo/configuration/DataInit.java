@@ -5,6 +5,7 @@ import com.example.demo.domain.repository.CategoryRepo;
 import com.example.demo.domain.repository.ProductRepo;
 import com.example.demo.domain.repository.StockRepo;
 import com.example.demo.domain.repository.UserRepo;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 @Component
+@Profile("dev")
 public class DataInit {
     private final ProductRepo productRepo;
     private final CategoryRepo categoryRepo;
