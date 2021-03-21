@@ -20,8 +20,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderNumber;
 
-//    @OneToMany   //do weryfikacji
-//    private String userName;
+    @ManyToOne   //do weryfikacji
+    private User user;
 
 //    private Double totalPrice;    //bedze wyliczona z orderLine
 

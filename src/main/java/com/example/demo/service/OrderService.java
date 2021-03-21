@@ -23,24 +23,29 @@ public class OrderService {
     private final ProductRepo productRepo;
     private final OrderLineRepo orderLineRepo;
     private final OrderRepo orderRepo;
+    private final UserService userService;
 
-    public OrderService(ProductService productService, ProductRepo productRepo, OrderLineRepo orderLineRepo, OrderRepo orderRepo) {
+
+    public OrderService(ProductService productService, ProductRepo productRepo, OrderLineRepo orderLineRepo, OrderRepo orderRepo, UserService userService) {
         this.productService = productService;
         this.productRepo = productRepo;
         this.orderLineRepo = orderLineRepo;
         this.orderRepo = orderRepo;
+        this.userService = userService;
     }
 
+    // TODO: 21.03.2021 realacje miedzy userem a orderem
     //dodawanmie lini zamowienia
     public Long createOrder(OrderDto orderDto) {
         Order order = new Order();
+        order.setUser(userService.findUserEntity());//do weryfikacji
         order.setOrderDate(LocalDate.now());
         order.setDeliveryAddress(orderDto.getDeliveryAddress());
         order.setUserAddress(orderDto.getUserAddress());
         order.setStatus(Status.AWAITING_PAYMENT);
         Order savedInDb = orderRepo.save(order);
 
-        // TODO: 18.03.2021  sprawdzeic czemu nei działą
+
         if (orderDto.getOrderLines() != null) {
             orderDto.getOrderLines().stream().forEach(orderLineDto -> {
                 OrderLine orderLine = new OrderLine();
@@ -94,6 +99,7 @@ Integer orderedQuantity=orderLineForm.getQuantity();
 
     private OrderDto map(Order order) {
         OrderDto orderDto = new OrderDto();
+        orderDto.setUser(order.getUser());
         orderDto.setUserAddress(order.getUserAddress());
         orderDto.setOrderDate(order.getOrderDate());
         orderDto.setStatus(order.getStatus());
@@ -122,6 +128,10 @@ Integer orderedQuantity=orderLineForm.getQuantity();
         OrderLine orderLine=orderLineRepo.findById(id).orElseThrow(()-> new ApplicationException("No such orderLine exists"));
         productService.changeStock(orderLine.getQuantity(),orderLine.getProduct().getProductId());
         orderLineRepo.deleteById(id);
+    }
+
+    public List<OrderDto> getOrders(){
+        return userService.findUserEntity().getOrders().stream().map(this::map).collect(Collectors.toList());
     }
 
 }

@@ -11,16 +11,22 @@
 <body>
 <div th:insert="~{navBar::header}"></div>
 <body>
+<h1>Lista zamówień</h1>
 
-<form th:object="${productCategoryForm}" method="post" action="/addCategory">
-    <label for="name">Category name:</label><br>
-    <input type="text" th:field="*{name}"/><br>
-    <label for="type">Category type:</label><br>
-    <input type="text" th:field="*{type}"/>
-    <input type="submit" value="Zapisz">
 
-</form>
+<table border="10" style="width:100%">
+    <tr>
+        <th>Order Id</th>
+        <th>Delivery Address</th>
 
+    </tr>
+    <tr th:each="order: ${orderList}">
+        <td><a th:href="@{/orderDetails/{id}(id=${order.orderNumber})}" th:text="${order.orderNumber}"></td>
+        <td th:text="${order.deliveryAddress}"></td>
+
+    </tr>
+</table>
+<!--<p th:if="${deleteErrorId == category.id}">Nie można uzunąc kategorii, ponieważ zawiera produkty</p>-->
 
 
 </body>

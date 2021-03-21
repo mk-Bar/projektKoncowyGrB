@@ -9,35 +9,7 @@
 </head>
 
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <span class="navbar-brand mb-0 h1">Produkt</span>
-    <div class="navbar">
-        <ul class="navbar-nav">
-            <li class="nav-item active">
-                <a class="nav-link" th:href="@{/index}">Strona główna</a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" th:href="@{/categories}">Zapisane kategorie</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/addCategory}">Dodaj kategorię</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/addProduct}">Dodaj produkt</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/listOfProduct}">Lista produktów</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/orderForm}">Nowe zamówienie</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/orderDetails/{id}}">Szczegóły zamówienia</a>
-            </li>
-
-        </ul>
-    </div>
-</nav>
+<div th:insert="~{navBar::header}"></div>
 <body>
 
 <form th:object="${productDto}" method="post" action="/addProduct">

@@ -37,9 +37,9 @@ public class OrderHtmlController {
     }
 
     @GetMapping("/orderDetails/{id}")
-    public String orderDetails(Model model, @PathVariable("id") Long id, @RequestParam (value = "stockError",required = false) String stockError) {
-        if (stockError!=null) {
-        model.addAttribute("stockError",true);
+    public String orderDetails(Model model, @PathVariable("id") Long id, @RequestParam(value = "stockError", required = false) String stockError) {
+        if (stockError != null) {
+            model.addAttribute("stockError", true);
         }
 
         model.addAttribute("orderDto", orderService.showOrderById(id));
@@ -49,6 +49,12 @@ public class OrderHtmlController {
         return "orderDetails";
     }
 
+    @GetMapping("/orders")
+    public String orderList(Model model) {
+        model.addAttribute("orderList", orderService.getOrders());
+
+        return "orders";
+    }
 
     @PostMapping("/orderDetails/{id}")
     public String addOrderLine(@PathVariable("id") Long id, @ModelAttribute("orderLineForm") OrderLineForm orderLineForm) {

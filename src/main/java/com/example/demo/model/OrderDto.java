@@ -2,6 +2,7 @@ package com.example.demo.model;
 
 import com.example.demo.domain.model.OrderLine;
 import com.example.demo.domain.model.Status;
+import com.example.demo.domain.model.User;
 import lombok.Data;
 
 import javax.persistence.EnumType;
@@ -15,10 +16,9 @@ public class OrderDto {
 
 
     private Long orderNumber;
-//    @OneToMany   //do weryfikacji
-//    private String userName;
-//    private Double totalPrice;    //bedze wyliczona z orderLine
 
+
+    private User user;
     private String userAddress;
     private String deliveryAddress;
     private LocalDate orderDate;
